@@ -35,6 +35,8 @@
 #include <xscontroller/xsscanner.h>
 #include <xscontroller/xscontrol_def.h>
 #include <xscontroller/xsdevice_def.h>
+#include <xscontroller/mtdevice.h>
+#include <xstypes/xsfilterprofilearray.h>
 
 #include "messagepublishers/packetcallback.h"
 #include "messagepublishers/accelerationpublisher.h"
@@ -253,8 +255,12 @@ bool XdaInterface::configureOutput(unsigned int sampling_frequency,
 	{
 		configArray.push_back(XsOutputConfiguration(XDI_PacketCounter, 0));
 		configArray.push_back(XsOutputConfiguration(XDI_SampleTimeFine, 0));
+
 		if (enable_acceleration)
+    {
+      configArray.push_back(XsOutputConfiguration(XDI_FreeAcceleration, sampling_frequency));
 			configArray.push_back(XsOutputConfiguration(XDI_Acceleration, sampling_frequency));
+    }
 		if (enable_angular_velocity)
 			configArray.push_back(XsOutputConfiguration(XDI_RateOfTurn, sampling_frequency));
 		if (enable_orientation)
@@ -279,6 +285,10 @@ bool XdaInterface::prepare()
 
 	if (!m_device->gotoConfig())
 		return handleError("Could not go to config");
+
+  const auto curr_profile = m_device->onboardFilterProfile();
+  ROS_INFO_STREAM(curr_profile.kind() << " -- " << curr_profile.label() 
+      << " Type: " << static_cast<int>(curr_profile.type()) << " Version: " << curr_profile.version());
 
 	std::string filter_profile;
 	if (ros::param::param("~filter_profile", filter_profile, filter_profile))
