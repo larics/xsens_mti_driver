@@ -56,8 +56,7 @@ public:
 	void registerPublishers(ros::NodeHandle &node);
 
 	bool connectDevice();
-	bool configureOutput(unsigned int sampling_frequency, unsigned int enable_acceleration,
-					unsigned int enable_angular_velocity, unsigned int enable_orientation);
+	bool configureOutput(unsigned int sampling_frequency, unsigned int enable_acceleration, unsigned int enable_angular_velocity, unsigned int enable_orientation, unsigned int enable_baro);
 	bool prepare();
 	void close();
 

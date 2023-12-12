@@ -240,7 +240,8 @@ bool XdaInterface::connectDevice()
 bool XdaInterface::configureOutput(unsigned int sampling_frequency,
 								   unsigned int enable_acceleration,
 								   unsigned int enable_angular_velocity,
-								   unsigned int enable_orientation)
+								   unsigned int enable_orientation,
+                   unsigned int enable_baro)
 {
 	assert(m_device != 0);
 
@@ -255,6 +256,10 @@ bool XdaInterface::configureOutput(unsigned int sampling_frequency,
 	{
 		configArray.push_back(XsOutputConfiguration(XDI_PacketCounter, 0));
 		configArray.push_back(XsOutputConfiguration(XDI_SampleTimeFine, 0));
+
+    if (enable_baro) {
+      configArray.push_back(XsOutputConfiguration(XDI_BaroPressure, sampling_frequency));
+    }
 
 		if (enable_acceleration)
     {
