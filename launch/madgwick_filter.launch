@@ -1,0 +1,17 @@
+<launch>
+    <!-- Use groups if you want to launch several nodes for multiple devices.
+    Make sure to use different param files for each sensor. -->
+    <!-- <group ns="sensor_1"> -->
+        <node  name="xsens_mti_node" pkg="xsens_mti_driver" type="xsens_mti_node" output="screen">
+            <rosparam command="load" file="$(find xsens_mti_driver)/param/xsens_mti_node.yaml" />
+        </node>
+
+        <!-- Requires imu_tools ROS package (sudo apt install ros-noetic-imu-tools) -->
+        <node name="imu_madgwick_filter" pkg="imu_filter_madgwick" type="imu_filter_node" ns="madgwick_filter">
+          <remap from="imu/data_raw" to="/imu/data"/>
+          <remap from="imu/mag" to="/imu/mag_repacked"/>
+        </node>
+
+        <node name="imu_mag_repacking" pkg="xsens_mti_driver" type="imu_mag_repacking.py"/>
+    <!-- </group> -->
+</launch>
